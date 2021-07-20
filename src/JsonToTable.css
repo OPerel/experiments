@@ -1,0 +1,13 @@
+table {
+  border: 1px solid;
+  border-collapse: collapse;
+}
+
+tr, th, td {
+    border: 1px solid;
+    padding: 0.5em 1em;
+}
+
+.json-to-table {
+    display: flex;
+}

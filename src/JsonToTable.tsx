@@ -1,86 +1,87 @@
 import React from 'react';
 import './JsonToTable.css';
 
-// const data: any = {
-//   name: 'String',
-//   status: 'String',
-//   field: {
-//     _type: 'Number',
-//     _description: 'A number that describes something'
-//   },
-//   nested: {
-//     _type: 'Object',
-//     inside1: 'String',
-//     inside2: {
-//       _type: 'Object',
-//       _description: 'foo bar',
-//       ins: 'String',
-//       ins2: {
-//         _type: 'Object',
-//         ins22: 'Number'
-//       }
-//     },
-//     nested2: {
-//       _type: 'Object',
-//       inside11: 'URL',
-//       inside22: 'String',
-//       nested3: {
-//         _type: 'Object',
-//         inside111: {
-//           _type: 'Object',
-//           _description: 'la la la la la',
-//           nested33: {
-//             _type: 'Object',
-//             inn: {
-//               _type: 'String',
-//               _description: 'la di da di'
-//             },
-//             inn2: {
-//               _type: 'String',
-//               _description: 'la di da di'
-//             }
-//           }
-//         }
-//       },
-//       again2: {
-//         _type: 'Number',
-//         _description: 'something'
-//       }
-//     },
-//     again1: 'String'
-//   },
-//   outAgain: 'String'
-// }
-const data = {
-  "createdAt": "Date",
-  "type": {
-    "_type": "String",
-    "_description": "The Type of the event:\n- User Voted For Suggestion\n- User Added New Argument\n- User Added New Comment\n- User Added New Section Suggestion\n- User Added New Edit Section Suggestion\n- New Section Suggestion Was Accepted\n- New Edit Section Suggestion Was Accepted"
+const data: any = {
+  name: 'String',
+  status: 'String',
+  field: {
+    _type: 'Number',
+    _description: 'A number that describes something'
   },
-  "subType": "String",
-  "itemId": {
-    "_ref": "Section|Argument|Comment",
-    "_description": "The id of the item that was added/changed/voted/accepted"
+  nested: {
+    _type: 'Object',
+    inside1: 'String',
+    inside2: {
+      _type: 'Object',
+      _description: 'foo bar',
+      ins: 'String',
+      ins2: {
+        _type: 'Object',
+        ins22: 'Number'
+      }
+    },
+    nested2: {
+      _type: 'Object',
+      inside11: 'URL',
+      inside22: 'String',
+      nested3: {
+        _type: 'Object',
+        inside111: {
+          _type: 'Object',
+          _description: 'la la la la la',
+          nested33: {
+            _type: 'Object',
+            inn: {
+              _type: 'String',
+              _description: 'la di da di'
+            },
+            inn2: {
+              _type: 'String',
+              _description: 'la di da di'
+            }
+          }
+        }
+      },
+      again2: {
+        _type: 'Number',
+        _description: 'something'
+      }
+    },
+    again1: 'String'
   },
-  "creator": "User"
+  outAgain: 'String'
 }
+// const data = {
+//   "createdAt": "Date",
+//   "type": {
+//     "_type": "String",
+//     "_description": "The Type of the event:\n- User Voted For Suggestion\n- User Added New Argument\n- User Added New Comment\n- User Added New Section Suggestion\n- User Added New Edit Section Suggestion\n- New Section Suggestion Was Accepted\n- New Edit Section Suggestion Was Accepted"
+//   },
+//   "subType": "String",
+//   "itemId": {
+//     "_ref": "Section|Argument|Comment",
+//     "_description": "The id of the item that was added/changed/voted/accepted"
+//   },
+//   "creator": "User"
+// }
 
 
 // get a number representing the level of nesting to create empty columns
-// TODO: counter should not count more than object on the same nesting level. At the moment redundant columns may be created.
-const nestedColumnsCounter = (data: any): number => {
-  let counter = 0;
+const nestedColumnsCounter = (data: any) => {
   const countObjects = (data: any) => {
-    Object.keys(data).forEach((key: any) => {
+    let maxCounter = 0;
+    Object.keys(data).forEach((key) => {
       const value = data[key];
       if (value._type && value._type === 'Object') {
-        counter++;
-        countObjects(value);
+        const childCounter = countObjects(value);
+        if (childCounter + 1 > maxCounter){
+          maxCounter = childCounter + 1;
+        }
       }
     });
+    return maxCounter;
   }
-  countObjects(data);
-  return counter;
+  return countObjects(data);
 }
 
 // create an array representing table headers
